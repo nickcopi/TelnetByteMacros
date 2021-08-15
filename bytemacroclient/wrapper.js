@@ -2,6 +2,8 @@ const {spawn} = require('child_process');
 const child_process = require('child_process');
 const net = require('net');
 
+let byteMacros = [];
+
 const IAC = 255;
 const BM = 19;
 const SB = 250;
@@ -80,6 +82,7 @@ const warpIncoming = data=>{
 			replacement
 		}
 	});
+	byteMacros = byteMacros.concat(bms);
 	//console.log(bms);
 	data = data.split(',');
 	return Buffer.from(data);
@@ -90,6 +93,10 @@ const warpOutgoing = data=>{
 	const wontString = `${IAC},${WONT},${BM}`;
 	while(data.includes(wontString))
 		data = data.replace(wontString,`${IAC},${WILL},${BM}`);
+	byteMacros.forEach(bm=>{
+		const replacement = [...bm.replacement].map(a=>a.charCodeAt(0)).join(',');
+		if(data.includes(replacement)) data = data.replace(replacement,bm.byte);
+	});
 	data = data.split(',');
 	return Buffer.from(data);
 }
