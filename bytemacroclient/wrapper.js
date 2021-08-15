@@ -102,7 +102,7 @@ const warpOutgoing = data=>{
 		data = data.replace(wontString,`${IAC},${WILL},${BM}`);
 	byteMacros.forEach(bm=>{
 		const replacement = [...bm.replacement].map(a=>a.charCodeAt(0)).join(',');
-		if(data.includes(replacement)) data = data.replace(replacement,bm.byte);
+		while(data.includes(replacement)) data = data.replace(replacement,bm.byte);
 	});
 	data = data.split(',');
 	if(respondBM){
