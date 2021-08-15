@@ -77,6 +77,18 @@ const addByteMacros = buf=>{
 
 }
 
+const processMacros = buf=>{
+	buf = [...buf];
+	macros.forEach(macro=>{
+		while(buf.includes(macro.byte)){
+			const index = buf.indexOf(macro.byte);
+			const replacement = [...macro.replacement].map(a=>a.charCodeAt(0));
+			buf = [...buf.slice(0,index), ...replacement, ...buf.slice(index+1,buf.length)];
+		}
+	});
+	return Buffer.from(buf);
+}
+
 
 module.exports = {
 
@@ -84,4 +96,5 @@ module.exports = {
 	addDoNegotiateWindowSize,
 	addDoSendLocation,
 	addByteMacros,
+	processMacros
 }
