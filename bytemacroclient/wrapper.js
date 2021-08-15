@@ -3,14 +3,18 @@ const child_process = require('child_process');
 const net = require('net');
 
 let byteMacros = [];
+let respondBM = false;
 
 const IAC = 255;
 const BM = 19;
+const SE = 240;
 const SB = 250;
 const WILL = 251;
 const WONT = 252;
 
 const PORT = 18492;
+
+const ACCEPT = 2;
 
 const createServer = ()=>{
 	return new Promise((resolve,reject)=>{
@@ -82,7 +86,10 @@ const warpIncoming = data=>{
 			replacement
 		}
 	});
-	byteMacros = byteMacros.concat(bms);
+	if(bms.length){
+		byteMacros = byteMacros.concat(bms);
+		respondBM = true;
+	}
 	//console.log(bms);
 	data = data.split(',');
 	return Buffer.from(data);
@@ -98,6 +105,10 @@ const warpOutgoing = data=>{
 		if(data.includes(replacement)) data = data.replace(replacement,bm.byte);
 	});
 	data = data.split(',');
+	if(respondBM){
+		respondBM = false;
+		byteMacros.forEach(bm=>data = data.concat([IAC,SB,BM,ACCEPT,bm.byte,IAC,SE]));
+	}
 	return Buffer.from(data);
 }
 
