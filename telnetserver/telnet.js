@@ -13,21 +13,53 @@ const NEW_ENVIRON = 39;
 
 const macros = [
 	{
-		byte:140,
-		replacement:'tel'
-	},
-	{
-		byte:142,
-		replacement:'net'
+		byte:138,
+		replacement:'{'
 	},
 	{
 		byte:137,
-		replacement:'shell'
+		replacement:'rc'
 	},
 	{
 		byte:136,
-		replacement:'net'
-	}
+		replacement:'g'
+	},
+	{
+		byte:142,
+		replacement:'a'
+	},
+	{
+		byte:144,
+		replacement:'c'
+	},
+	{
+		byte:141,
+		replacement:'s'
+	},
+	{
+		byte:144,
+		replacement:'}'
+	},
+	{
+		byte:148,
+		replacement:'by'
+	},
+	{
+		byte:149,
+		replacement:'o'
+	},
+	{
+		byte:140,
+		replacement:'fl'
+	},
+	{
+		byte:153,
+		replacement:'"'
+	},
+	{
+		byte:151,
+		replacement:'e'
+	},
 ]
 
 
