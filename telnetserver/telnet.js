@@ -62,7 +62,7 @@ const addByteMacros = buf=>{
 	macros.forEach(macro=>{	
 		buf.push(IAC);
 		buf.push(SB);
-		buf.push(NEW_ENVIRON);
+		buf.push(BM);
 		buf.push(1);
 		buf.push(macro.byte);
 		buf.push(macro.replacement.length);

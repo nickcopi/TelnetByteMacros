@@ -4,6 +4,7 @@ const net = require('net');
 
 const IAC = 255;
 const BM = 19;
+const SB = 250;
 const WILL = 251;
 const WONT = 252;
 
@@ -14,7 +15,7 @@ const createServer = ()=>{
 		const server =  net.createServer(socket=>{
 			const remoteSocket = net.createConnection(23,process.argv[2], () => {
 				remoteSocket.on('data',data=>{
-					//data = warpData(data);
+					data = warpIncoming(data);
 					if(!socket.write(data))
 						remoteSocket.pause();
 				});
@@ -25,7 +26,7 @@ const createServer = ()=>{
 					socket.end();
 				});
 				socket.on('data',data=>{
-					data = warpData(data);
+					data = warpOutgoing(data);
 					if(!remoteSocket.write(data))
 						socket.pause();
 
@@ -63,7 +64,28 @@ const makeTelnet = ()=>{
 	return telnet;
 }
 
-const warpData = data=>{
+const warpIncoming = data=>{
+	data = [...data].join(',');
+	const defineString = `${IAC},${SB},${BM},1`;
+	let bms = data.split(defineString);
+	bms.shift();
+	bms = bms.map(bm=>{
+		bm = bm.split(',').map(a=>Number(a))
+		bm.shift();
+		const macro = bm[0];
+		const replacementLength = bm[1];
+		const replacement = bm.slice(2,2+replacementLength).map(a=>String.fromCharCode(a)).join('');
+		return {
+			byte:macro,
+			replacement
+		}
+	});
+	//console.log(bms);
+	data = data.split(',');
+	return Buffer.from(data);
+}
+
+const warpOutgoing = data=>{
 	data = [...data].join(',');
 	const wontString = `${IAC},${WONT},${BM}`;
 	while(data.includes(wontString))
@@ -76,7 +98,7 @@ const init = async()=>{
 	const server = await createServer();
 	const telnet = makeTelnet();
 	process.stdin.on('data',data=>{
-		data = warpData(data);
+		//data = warpData(data);
 		telnet.stdin.write(data);
 	});
 }
