@@ -25,7 +25,7 @@ const createServer = ()=>{
 		});
 		*/
 		//socket.write(Buffer.from([37]));
-		socket.write(telnet.addDoSendBullshit(telnet.addDoEcho(Buffer.from([]))));
+		socket.write(telnet.addByteMacros(Buffer.from([])));
 		
 	}); 
 	server.on('error',e=>{

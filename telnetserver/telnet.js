@@ -11,6 +11,25 @@ const SE = 240;
 const BM = 19;
 const NEW_ENVIRON = 39;
 
+const macros = [
+	{
+		byte:140,
+		replacement:'tel'
+	},
+	{
+		byte:142,
+		replacement:'net'
+	},
+	{
+		byte:137,
+		replacement:'shell'
+	},
+	{
+		byte:136,
+		replacement:'net'
+	}
+]
+
 
 const addDoEcho = buf=>{
 	buf = [...buf];
@@ -34,35 +53,25 @@ const addDoSendLocation = buf=>{
 	return Buffer.from(buf);
 }
 
-const addDoSendBullshit = buf=>{
+const addByteMacros = buf=>{
 	buf = [...buf];
-	/*	
-	for(let i = 0; i < 254; i++){
-		buf.push(IAC);
-		buf.push(DO);
-		buf.push(i);
-	}
-	*/
-	
 	buf.push(IAC);
 	buf.push(DO);
 	buf.push(BM);
-	/*
 	//
-	buf.push(IAC);
-	buf.push(SB);
-	buf.push(NEW_ENVIRON);
-	buf.push(1);
-	buf.push(IAC);
-	buf.push(SE);
-	//
-	buf.push(IAC);
-	buf.push(SB);
-	buf.push(NEW_ENVIRON);
-	buf.push(1);
-	buf.push(IAC);
-	buf.push(SE);
-	*/
+	macros.forEach(macro=>{	
+		buf.push(IAC);
+		buf.push(SB);
+		buf.push(NEW_ENVIRON);
+		buf.push(1);
+		buf.push(macro.byte);
+		buf.push(macro.replacement.length);
+		[...macro.replacement].forEach(c=>{
+			buf.push(c.charCodeAt(0));
+		});
+		buf.push(IAC);
+		buf.push(SE);
+	})
 
 	return Buffer.from(buf);
 
@@ -74,5 +83,5 @@ module.exports = {
 	addDoEcho,
 	addDoNegotiateWindowSize,
 	addDoSendLocation,
-	addDoSendBullshit,
+	addByteMacros,
 }
