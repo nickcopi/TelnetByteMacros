@@ -1,0 +1,7 @@
+{
+	"name":"Telnet Byte Macros",
+	"tags":["Cyber"],
+	"description":"Implement a subset of telnet including a byte macro feature supporting client wrapper and a server.",
+	"date":"August 2021"
+}
+
